@@ -29,10 +29,10 @@ constraint
 % We also break some symmetry
 % here by strictly ordering each group.
 %
-%constraint
-%    forall (r in rounds, g in groups, i in group where i < n_per_group) (
-%       round_group_of_golfer[r, g, i] < round_group_of_golfer[r, g, i + 1]
-%   );
+constraint
+    forall (r in rounds, g in groups, i in group where i < n_per_group) (
+       round_group_of_golfer[r, g, i] > round_group_of_golfer[r, g, i + 1]
+   );
 
 
 
@@ -43,12 +43,15 @@ constraint
 constraint
     forall (r1, r2 in rounds where r1!=r2) (  
       forall(g1, g2 in groups)(
-      sum (i1, j1, i2, j2 in group where (i1 < j1/\i2!=j2)) (
-                %[r1,g1,i1]=[r2,g2,i2]
-                %[r1,g1,j1]=[r2,g2,j2]
+      sum (i1, j1, i2, j2 in group where (i1 < j1/\i2<j2)) (
+                %  ( [r1,g1,i1]=[r2,g2,i2] ^ [r1,g1,j1]=[r2,g2,j2] )
               bool2int(
               round_group_of_golfer[r1, g1, i1] =round_group_of_golfer[r2, g2, i2]  /\  
               round_group_of_golfer[r1, g1, j1] = round_group_of_golfer[r2, g2, j2]
+              )+
+              bool2int(
+              round_group_of_golfer[r1, g1, i1] =round_group_of_golfer[r2, g2, j2]  /\  
+              round_group_of_golfer[r1, g1, j1] = round_group_of_golfer[r2, g2, i2]
               )
           )<1
         )    
@@ -61,7 +64,9 @@ output [
     "Groups        : ", show(n_groups), "\n", 
     "No. per group : ", show(n_per_group), "\n",
     "No. of rounds : ", show(n_rounds), "\n"
-] ++ [
+] 
+++ 
+[
     ( if g = 1 /\ i = 1 then "\nround " ++ show(r) ++ ":" else "" endif) ++
     ( if i = 1 then "   " else " " endif) ++
     show_int(2, round_group_of_golfer[r, g, i]) 
