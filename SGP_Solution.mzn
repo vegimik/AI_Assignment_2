@@ -30,18 +30,18 @@ constraint
 % here by strictly ordering each group.
 %
 constraint
-    forall (r in rounds, g in groups, i in group where i < n_per_group) (
-       round_group_of_golfer[r, g, i] > round_group_of_golfer[r, g, i + 1]
+  forall (r in rounds, g in groups, i in group where i < n_per_group) (
+      round_group_of_golfer[r, g, i] > round_group_of_golfer[r, g, i + 1]
    );
 
 
 
 
-%(Xwij ^ Xwik)-->	ㄱ(Xyij ^ Xyik)
+%(Xwij1t1 ^ Xwij2t2)-->	ㄱ(Xupq1t1 ^ Xupq2t2)
 % Each pair can play together at most once.
 %    
 constraint
-    forall (r1, r2 in rounds where r1!=r2) (  
+    forall (r1, r2 in rounds where r1<r2) (  
       forall(g1, g2 in groups)(
       sum (i1, j1, i2, j2 in group where (i1 < j1/\i2<j2)) (
                 %  ( [r1,g1,i1]=[r2,g2,i2] ^ [r1,g1,j1]=[r2,g2,j2] )
