@@ -15,25 +15,23 @@ array [rounds, groups, group] of var golfers: round_group_of_golfer;
 
 
 % Each member of each group must be distinct.
-%
 %  C11 = ( V[i=0,j-0;i<n_groups,j<n_per_group]wij ) 
 %  C12 = ( V[r=1]V[i=0,j-0;i<n_groups,j<n_per_group]V[t<-D,t*<-D/{t}](Xwijt-->ㄱXwijt*) )
 %  C1 = C11 ^ C12
+%
 constraint
     forall (r in rounds) (
         alldifferent (g in groups, i in group) (round_group_of_golfer[r, g, i])
     );
 
 
-%Kemi me e check kete kontraint
-% We also break some symmetry
-% here by strictly ordering each group.
+
+% We also break some symmetry, here by strictly ordering each group.
 %
 constraint
   forall (r in rounds, g in groups, i in group where i < n_per_group) (
       round_group_of_golfer[r, g, i] > round_group_of_golfer[r, g, i + 1]
    );
-
 
 
 
